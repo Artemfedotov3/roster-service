@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/v1/rosters")
 @RequiredArgsConstructor
 public class RosterController {
-
     private final RosterService rosterService;
 
     @GetMapping

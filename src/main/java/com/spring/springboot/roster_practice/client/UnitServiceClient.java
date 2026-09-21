@@ -35,8 +35,10 @@ public class UnitServiceClient {
                     null,
                     new ParameterizedTypeReference<List<UnitInfoDto>>() {}
             );
+
             log.info("✅ Received {} units", response.getBody().size());
             return response.getBody();
+
         } catch (Exception e) {
             log.error("❌ Error calling Unit Service: {}", e.getMessage());
             return List.of();

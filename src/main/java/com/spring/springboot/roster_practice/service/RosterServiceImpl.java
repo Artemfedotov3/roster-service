@@ -74,7 +74,6 @@ public class RosterServiceImpl implements RosterService {
         if (totalCost > MAX_COST) {
             throw new RuntimeException("Total cost (" + totalCost + ") exceeds maximum allowed (" + MAX_COST + ")");
         }
-
         entity.setName(request.getName());
         entity.setDescription(request.getDescription());
         entity.setUnitIds(convertToJson(request.getUnitIds()));
