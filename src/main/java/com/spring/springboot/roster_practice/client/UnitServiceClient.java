@@ -24,8 +24,6 @@ public class UnitServiceClient {
     @Value("${unit.service.url}")
     private String unitServiceUrl;
 
-    // ===== ПОЛУЧЕНИЕ ЮНИТОВ =====
-
     public List<UnitInfoDto> getAllUnits() {
         String url = unitServiceUrl + "/api/v1/units_models";
         log.info("📡 Calling Unit Service: {}", url);
@@ -55,8 +53,6 @@ public class UnitServiceClient {
                 .collect(Collectors.toList());
     }
 
-    // ===== РАСЧЕТ ПОЛНОЙ СТОИМОСТИ =====
-
     public int calculateTotalCost(List<Long> unitIds) {
         log.info("💰 Calculating total cost for unit IDs: {}", unitIds);
 
@@ -76,13 +72,9 @@ public class UnitServiceClient {
         return total;
     }
 
-    // ===== РАСЧЕТ СТОИМОСТИ ОДНОГО ЮНИТА =====
-
     private int calculateUnitTotalCost(Long unitId) {
-        // 1. Получаем стоимость юнита
         int unitCost = getUnitCostById(unitId);
 
-        // 2. Получаем стоимости снаряжения (используем существующие эндпоинты)
         int upgradesCost = getTotalCostFromEndpoint("/api/v1/upgrade/by-unit/" + unitId);
         int exoticBeastsCost = getTotalCostFromEndpoint("/exotic_beast_unit/" + unitId);
         int equipmentsCost = getTotalCostFromEndpoint("/api/v1/equipment/unit/" + unitId);
@@ -105,14 +97,11 @@ public class UnitServiceClient {
         return units.get(0).getCost();
     }
 
-    // ===== УНИВЕРСАЛЬНЫЙ МЕТОД ДЛЯ ПОЛУЧЕНИЯ СУММЫ ИЗ ЛЮБОГО ЭНДПОИНТА =====
-
     private int getTotalCostFromEndpoint(String path) {
         String url = unitServiceUrl + path;
         log.info("📡 Getting cost from: {}", url);
 
         try {
-            // Получаем ответ как JsonNode (не зависит от DTO)
             ResponseEntity<JsonNode> response = restTemplate.getForEntity(url, JsonNode.class);
 
             JsonNode body = response.getBody();
@@ -120,7 +109,6 @@ public class UnitServiceClient {
                 return 0;
             }
 
-            // Суммируем все cost в массиве
             int total = 0;
             for (JsonNode item : body) {
                 JsonNode costNode = item.get("cost");
