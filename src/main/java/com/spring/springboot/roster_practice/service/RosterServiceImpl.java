@@ -48,13 +48,11 @@ public class RosterServiceImpl implements RosterService {
     @Override
     @Transactional
     public RosterResponseDto createRoster(RosterRequestDto request) {
-        // Проверка стоимости при создании
         int totalCost = unitServiceClient.calculateTotalCost(request.getUnitIds());
         if (totalCost > MAX_COST) {
             throw new RuntimeException("Total cost (" + totalCost + ") exceeds maximum allowed (" + MAX_COST + ")");
         }
 
-        // Сохранение
         RosterEntity entity = RosterEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -72,7 +70,6 @@ public class RosterServiceImpl implements RosterService {
         RosterEntity entity = rosterRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Roster not found with id: " + id));
 
-        // Проверка стоимости при обновлении
         int totalCost = unitServiceClient.calculateTotalCost(request.getUnitIds());
         if (totalCost > MAX_COST) {
             throw new RuntimeException("Total cost (" + totalCost + ") exceeds maximum allowed (" + MAX_COST + ")");
@@ -123,7 +120,6 @@ public class RosterServiceImpl implements RosterService {
             return new ArrayList<>();
         }
         try {
-            // Явно указываем тип List<Long>
             return objectMapper.readValue(json, new TypeReference<List<Long>>() {});
         } catch (JsonProcessingException e) {
             log.error("Error parsing unitIds from JSON", e);
